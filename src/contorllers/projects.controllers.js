@@ -1,4 +1,5 @@
 import { Project } from "../models/projects.models.js";
+import { uploadCloudinary } from "../utility/Cloudinary.js";
 
 const addNewProject = async (req, res) => {
   //   console.table(req.body);
@@ -16,8 +17,16 @@ const addNewProject = async (req, res) => {
 
   //   console.log(req.body);
 
+  const file = req.files;
+
+  if (!file) {
+    res.status(401).json({ message: "Can't find the file" });
+  }
+
   console.log("the files are");
   console.log(req.files);
+  console.log(typeof req.files.ProjectImages[0]);
+  console.log(req.files.ProjectImages.length);
 
   if (!projectName || !projectDescription) {
     res.status(400).json({
@@ -25,7 +34,23 @@ const addNewProject = async (req, res) => {
     });
   }
 
+  // uploading to the cloudinary directly usign the file buffer
+
+  // Upload the file buffer directly to Cloudinary
+
+  //   uploadCloudinary();
+
+  //#############################################################
+
   const response = await Project.findOne({ projectName });
+
+  //   const totalImages = req.files.ProjectImages.length;
+
+  const imageBuffer = req.files.ProjectImages;
+
+  const respo = await Promise.all(
+    imageBuffer.map((eachImage) => uploadCloudinary(eachImage.buffer))
+  );
 
   //   console.log(response);
 

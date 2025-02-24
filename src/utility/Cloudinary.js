@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 
 cloudinary.config({
   cloud_name: "pradeepsahhu",
@@ -7,18 +6,24 @@ cloudinary.config({
   api_secret: "nhyFxRmgj8PFGCRgIhh2Ubs4YiM",
 });
 
-const uploadCloudinary = async function (localFilePah) {
-  if (!localFilePah) {
+const uploadCloudinary = async function (fileUploadStream) {
+  if (!fileUploadStream) {
     return null;
   }
 
-  try {
-    const uploadResult = await cloudinary.uploader.upload(localFilePah, {
-      resource_type: "auto",
-    });
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: "auto" }, // Adjust based on file type
+      (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+      }
+    );
 
-    console.log(autoCropUrl);
-  } catch (error) {}
+    uploadStream.end(fileUploadStream);
+  });
 };
 
 export { uploadCloudinary };
