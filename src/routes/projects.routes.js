@@ -17,9 +17,7 @@ router.route("/system").get(checkSystem);
 router.route("/").get(checkSystem);
 router
   .route("/addNewProject")
-  .post(
-    (upload.fields([{ name: "ProjectImages", maxCount: 5 }]), addNewProject)
-  );
+  .post(upload.fields([{ name: "ProjectImages", maxCount: 5 }]), addNewProject);
 router.route("/addNewProject").get((req, res) => {
   res.status(200).json({ message: "this route is working" });
 });

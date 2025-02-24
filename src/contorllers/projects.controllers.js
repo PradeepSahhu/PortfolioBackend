@@ -1,7 +1,7 @@
 import { Project } from "../models/projects.models.js";
 
 const addNewProject = async (req, res) => {
-  console.table(req.body);
+  //   console.table(req.body);
 
   const {
     projectName,
@@ -14,7 +14,10 @@ const addNewProject = async (req, res) => {
     date,
   } = req.body;
 
-  //   console.log(req.form);
+  //   console.log(req.body);
+
+  console.log("the files are");
+  console.log(req.files);
 
   if (!projectName || !projectDescription) {
     res.status(400).json({
@@ -24,9 +27,9 @@ const addNewProject = async (req, res) => {
 
   const response = await Project.findOne({ projectName });
 
-  console.log(response);
+  //   console.log(response);
 
-  console.log(response);
+  //   console.log(response);
 
   if (response) {
     res.status(200).json({
