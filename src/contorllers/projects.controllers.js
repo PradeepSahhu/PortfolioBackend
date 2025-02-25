@@ -103,8 +103,14 @@ const getProjects = async (req, res) => {
   return res.status(200).json(allProjects);
 };
 
-const editExistingProject = (req, res) => {
-  console.table(req.body);
+const editExistingProject = async (req, res) => {
+  const { projectID } = req.params;
+
+  // const { projectID } = req.body;
+
+  console.log(projectID);
+
+  const proj = await Project.findById(projectID);
   return res
     .status(200)
     .json({ message: "This is editExistingProject route is working" });

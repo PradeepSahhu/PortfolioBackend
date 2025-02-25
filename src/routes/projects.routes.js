@@ -22,7 +22,7 @@ router.route("/addNewProject").get((req, res) => {
   res.status(200).json({ message: "this route is working" });
 });
 
-router.route("/editProject").post(editExistingProject);
+router.route("/editProject/:projectID").post(editExistingProject);
 router.route("/delete").post(deleteExistingProject);
 router.route("/addImages").post(addImageProject);
 

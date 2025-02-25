@@ -31,6 +31,10 @@ const ProjectSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  status: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 export const Project = mongoose.model("Project", ProjectSchema);
