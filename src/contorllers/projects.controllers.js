@@ -53,7 +53,7 @@ const addNewProject = async (req, res) => {
 
   //   const totalImages = req.files.ProjectImages.length;
 
-  const imageBuffer = req.files.ProjectImages;
+  const imageBuffer = req.files?.ProjectImages;
 
   var imageSource = [];
 
@@ -103,6 +103,7 @@ const getProjects = async (req, res) => {
   return res.status(200).json(allProjects);
 };
 
+//completely update the project.
 const editExistingProject = async (req, res) => {
   const { projectID } = req.params;
 
@@ -110,10 +111,92 @@ const editExistingProject = async (req, res) => {
 
   console.log(projectID);
 
-  const proj = await Project.findById(projectID);
+  const {
+    projectName,
+    projectDescription,
+    projectImages,
+    tags,
+    links,
+    githubLink,
+    developer,
+    date,
+  } = req.body;
+
+  if (
+    !projectDescription ||
+    !projectName ||
+    !tags ||
+    !links ||
+    !githubLink ||
+    !developer ||
+    !date
+  ) {
+    return res.status(400).json({ message: "somethig needs to be updated" });
+  }
+
+  const imageBuffer = req.files?.ProjectImages;
+
+  var imageSource = [];
+
+  const respo = await Promise.all(
+    imageBuffer.map(async (eachImage, index) => {
+      const res = await uploadCloudinary(eachImage.buffer);
+      imageSource[index] = res.secure_url;
+      return res.secure_url;
+    })
+  );
+  console.table(imageSource);
+
+  const proj = await Project.findByIdAndUpdate(
+    projectID,
+    {
+      $set: {
+        projectName: projectName,
+        projectDescription: projectDescription,
+        projectImages: imageSource,
+        tags: tags,
+        links: links,
+        githubLink: githubLink,
+        developer: developer,
+        data: date,
+      },
+    },
+    { new: true }
+  );
+
   return res
     .status(200)
     .json({ message: "This is editExistingProject route is working" });
+};
+
+const editRecord = async (req, res) => {
+  const { projectID } = req.params;
+  const updateRecord = req.body;
+
+  if (!projectID) {
+    return res.status(400).json({ message: "can't find the project" });
+  }
+
+  if (Object.keys(updateRecord).length === 0) {
+    return res.status(401).json({ message: "nothing to update" });
+  }
+
+  try {
+    const project = await Project.findByIdAndUpdate(
+      projectID,
+      {
+        $set: updateRecord,
+      },
+      { new: true }
+    );
+    if (!project) {
+      return res.status(401).json({ message: "can't update the title" });
+    }
+    return res.status(200).json({ message: "Update completed" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error", error });
+  }
 };
 
 const deleteExistingProject = (req, res) => {
@@ -137,6 +220,7 @@ const checkSystem = (req, res) => {
 };
 
 export {
+  editRecord,
   addNewProject,
   editExistingProject,
   deleteExistingProject,
