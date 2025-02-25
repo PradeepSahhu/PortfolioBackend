@@ -18,11 +18,15 @@ const uploadCloudinary = async function (fileUploadStream) {
         if (error) {
           reject(error);
         }
+        // console.log(result);
         resolve(result);
       }
     );
 
     uploadStream.end(fileUploadStream);
+
+    // console.log("The Imae url is : ************* ");
+    // console.log(uploadStream);
   });
 };
 

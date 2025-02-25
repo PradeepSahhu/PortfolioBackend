@@ -44,18 +44,6 @@ const addNewProject = async (req, res) => {
 
   const response = await Project.findOne({ projectName });
 
-  //   const totalImages = req.files.ProjectImages.length;
-
-  const imageBuffer = req.files.ProjectImages;
-
-  const respo = await Promise.all(
-    imageBuffer.map((eachImage) => uploadCloudinary(eachImage.buffer))
-  );
-
-  //   console.log(response);
-
-  //   console.log(response);
-
   if (response) {
     res.status(200).json({
       message: "The project with the same name already  exist in the database",
@@ -63,10 +51,29 @@ const addNewProject = async (req, res) => {
     return;
   }
 
+  //   const totalImages = req.files.ProjectImages.length;
+
+  const imageBuffer = req.files.ProjectImages;
+
+  var imageSource = [];
+
+  const respo = await Promise.all(
+    imageBuffer.map(async (eachImage, index) => {
+      const res = await uploadCloudinary(eachImage.buffer);
+      imageSource[index] = res.secure_url;
+      return res.secure_url;
+    })
+  );
+  console.table(imageSource);
+
+  //   console.log(response);
+
+  //   console.log(response);
+
   const respond = await Project.create({
     projectName,
     projectDescription,
-    projectImages,
+    projectImages: imageSource,
     tags,
     links,
     githubLink,
