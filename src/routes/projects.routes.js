@@ -6,6 +6,7 @@ import {
   checkSystem,
   getProjects,
   editRecord,
+  addTags,
 } from "../contorllers/projects.controllers.js";
 
 import express from "express";
@@ -31,6 +32,13 @@ router
     editExistingProject
   );
 router.route("/delete").post(deleteExistingProject);
-router.route("/addImages").post(addImageProject);
+router
+  .route("/addImages/:projectID")
+  .post(
+    upload.fields([{ name: "ProjectImages", maxCount: 3 }]),
+    addImageProject
+  );
+
+router.route("/addTags/:projectID").post(addTags);
 
 export default router;
