@@ -6,6 +6,26 @@ cloudinary.config({
   api_secret: "nhyFxRmgj8PFGCRgIhh2Ubs4YiM",
 });
 
+const deleteResources = async (image_url) => {
+  try {
+    const urls = Array.isArray(image_url) ? image_url : [image_url];
+
+    const public_ids = urls
+      .map((url) => {
+        const match = url.match(/\/upload\/v\d+\/(.+?)\./);
+        return match ? match[1] : null;
+      })
+      .filter(Boolean);
+
+    // console.log(public_ids);
+    const res = await cloudinary.api.delete_resources(public_ids);
+
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const uploadCloudinary = async function (fileUploadStream) {
   if (!fileUploadStream) {
     return null;
@@ -30,4 +50,4 @@ const uploadCloudinary = async function (fileUploadStream) {
   });
 };
 
-export { uploadCloudinary };
+export { uploadCloudinary, deleteResources };

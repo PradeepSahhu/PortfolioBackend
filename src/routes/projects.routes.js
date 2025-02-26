@@ -31,7 +31,7 @@ router
     upload.fields([{ name: "ProjectImages", maxCount: 6 }]),
     editExistingProject
   );
-router.route("/delete").post(deleteExistingProject);
+router.route("/delete/:projectID").post(deleteExistingProject);
 router
   .route("/addImages/:projectID")
   .post(

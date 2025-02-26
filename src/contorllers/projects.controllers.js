@@ -1,5 +1,5 @@
 import { Project } from "../models/projects.models.js";
-import { uploadCloudinary } from "../utility/Cloudinary.js";
+import { uploadCloudinary, deleteResources } from "../utility/Cloudinary.js";
 
 const addNewProject = async (req, res) => {
   //   console.table(req.body);
@@ -236,6 +236,9 @@ const deleteExistingProject = async (req, res) => {
   }
 
   try {
+    const proj = await Project.findById(projectID);
+    console.log(proj.projectImages);
+    const imageRes = await deleteResources(proj.projectImages);
     const resp = await Project.findByIdAndDelete(projectID);
 
     if (!resp) {
@@ -247,9 +250,9 @@ const deleteExistingProject = async (req, res) => {
       .status(200)
       .json({ message: "This is deleteExistingProject route is working" });
   } catch (error) {
-    return res
-      .status(402)
-      .json({ message: "Something went wrong with the server" });
+    return res.status(402).json({
+      message: "Something went wrong with the server can't delete the project",
+    });
   }
 };
 
