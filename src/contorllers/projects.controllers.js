@@ -1,5 +1,6 @@
 import { Project } from "../models/projects.models.js";
 import { uploadCloudinary, deleteResources } from "../utility/Cloudinary.js";
+import { ApiResponse } from "../utility/APIResponse.js";
 
 const addNewProject = async (req, res) => {
   //   console.table(req.body);
@@ -66,9 +67,9 @@ const addNewProject = async (req, res) => {
         return res.secure_url;
       })
     );
-    console.log("This is the normal response");
-    console.table(respo);
-    console.log(respo);
+    // console.log("This is the normal response");
+    // console.table(respo);
+    // console.log(respo);
 
     // console.table(imageSource);
 
@@ -90,13 +91,14 @@ const addNewProject = async (req, res) => {
     const check = await Project.findById(respond._id);
 
     if (!check) {
-      res.status(200).json({ message: "Cant save this project now" });
-      return;
+      return res.status(200).json({ message: "Cant save this project now" });
     }
 
     return res
       .status(200)
-      .json({ message: "This is addNewProject route is working" });
+      .json(
+        new ApiResponse(200, check, "New Project Has been successfully added")
+      );
   } catch (error) {
     return res
       .status(501)
@@ -112,7 +114,11 @@ const getProjects = async (req, res) => {
       return res.status(400).json({ message: "Can't find any project" });
     }
 
-    return res.status(200).json(allProjects);
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, allProjects, "Successfully fetched the projects")
+      );
   } catch (error) {
     return res
       .status(501)
@@ -239,6 +245,13 @@ const deleteExistingProject = async (req, res) => {
     const proj = await Project.findById(projectID);
     console.log(proj.projectImages);
     const imageRes = await deleteResources(proj.projectImages);
+
+    if (
+      Object.values(imageRes.deleted).every((value) => value === "not_found")
+    ) {
+      return res.status(400).json({ message: "Can't delete the images" });
+    }
+
     const resp = await Project.findByIdAndDelete(projectID);
 
     if (!resp) {
@@ -248,7 +261,9 @@ const deleteExistingProject = async (req, res) => {
     }
     return res
       .status(200)
-      .json({ message: "This is deleteExistingProject route is working" });
+      .json(
+        new ApiResponse(200, resp, "Project has been successfully deleted")
+      );
   } catch (error) {
     return res.status(402).json({
       message: "Something went wrong with the server can't delete the project",
@@ -274,8 +289,6 @@ const addImageProject = async (req, res) => {
       return res.status(401).json({ message: "No image found" });
     }
 
-    // var imageSource = [];
-
     if (!Array.isArray(imageBuffer)) {
       imageBuffer = [imageBuffer];
     }
@@ -283,11 +296,11 @@ const addImageProject = async (req, res) => {
     const respo = await Promise.all(
       imageBuffer.map(async (eachImage) => {
         const res = await uploadCloudinary(eachImage.buffer);
-        // imageSource[index] = res.secure_url;
+
         return res.secure_url;
       })
     );
-    // console.table(imageSource);
+
     const resp = await Project.findByIdAndUpdate(
       projectID,
       {
@@ -306,7 +319,7 @@ const addImageProject = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "This is addImageProject route is working" });
+      .json(new ApiResponse(200, {}, "Images Uploaded to the Project"));
   } catch (error) {
     console.error(error);
     return res
@@ -344,7 +357,9 @@ const addTags = async (req, res) => {
       return res.status(401).json({ message: "Can't find the project" });
     }
 
-    return res.status(200).json({ message: "Successfully updated the tags" });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Tags Successfully Added to the Project"));
   } catch (error) {
     console.log(error);
     return res
@@ -353,10 +368,22 @@ const addTags = async (req, res) => {
   }
 };
 
-const checkSystem = (req, res) => {
+const checkSystem = (_, res) => {
+  const obj = {
+    Developer: "Pradeep Sahu",
+    Github: "https://github.com/PradeepSahhu",
+    linkedin: "https://www.linkedin.com/in/pradeepsahuu/",
+    mail: "official.pradeepsahu@gmail.com",
+  };
   return res
     .status(200)
-    .json({ message: "This is checksystem check is completed " });
+    .json(
+      new ApiResponse(
+        200,
+        obj,
+        "This is the home Route which checks the api functionality"
+      )
+    );
 };
 
 export {
