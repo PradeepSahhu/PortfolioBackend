@@ -17,9 +17,13 @@ const router = express.Router();
 router.route("/getAll").get(getProjects);
 router.route("/system").get(checkSystem);
 router.route("/").get(checkSystem);
-router
-  .route("/addNewProject")
-  .post(upload.fields([{ name: "ProjectImages", maxCount: 6 }]), addNewProject);
+router.route("/addNewProject").post(
+  upload.fields([
+    { name: "ProjectImages", maxCount: 6 },
+    { name: "mainImage", maxCount: 1 },
+  ]),
+  addNewProject
+);
 router.route("/addNewProject").get((req, res) => {
   res.status(200).json({ message: "this route is working" });
 });

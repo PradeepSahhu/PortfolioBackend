@@ -11,6 +11,10 @@ const ProjectSchema = new mongoose.Schema({
     required: true,
   },
   projectImages: { type: [String] },
+  mainImage: {
+    type: String,
+    required: true,
+  },
   tags: {
     type: [String],
     index: true,

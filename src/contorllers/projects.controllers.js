@@ -57,6 +57,12 @@ const addNewProject = async (req, res) => {
     //   const totalImages = req.files.ProjectImages.length;
 
     const imageBuffer = req.files?.ProjectImages;
+    const mainImageBuffer = req.files?.mainImage;
+    console.log(mainImageBuffer);
+
+    const mainIma = await uploadCloudinary(mainImageBuffer[0].buffer);
+    console.log("the cover image is *******");
+    console.log(mainIma);
 
     // var imageSource = [];
 
@@ -76,12 +82,14 @@ const addNewProject = async (req, res) => {
     //   console.log(response);
 
     //   console.log(response);
+    const projectTags = tags.split(",").map((tag) => tag.trim());
 
     const respond = await Project.create({
       projectName,
       projectDescription,
       projectImages: respo,
-      tags,
+      mainImage: mainIma.secure_url,
+      tags: projectTags,
       links,
       githubLink,
       developer,
@@ -137,7 +145,6 @@ const editExistingProject = async (req, res) => {
   const {
     projectName,
     projectDescription,
-    projectImages,
     tags,
     links,
     githubLink,
@@ -246,11 +253,11 @@ const deleteExistingProject = async (req, res) => {
     console.log(proj.projectImages);
     const imageRes = await deleteResources(proj.projectImages);
 
-    if (
-      Object.values(imageRes.deleted).every((value) => value === "not_found")
-    ) {
-      return res.status(400).json({ message: "Can't delete the images" });
-    }
+    // if (
+    //   Object.values(imageRes.deleted).every((value) => value === "not_found")
+    // ) {
+    //   return res.status(400).json({ message: "Can't delete the images" });
+    // }
 
     const resp = await Project.findByIdAndDelete(projectID);
 
@@ -265,7 +272,7 @@ const deleteExistingProject = async (req, res) => {
         new ApiResponse(200, resp, "Project has been successfully deleted")
       );
   } catch (error) {
-    return res.status(402).json({
+    return res.status(400).json({
       message: "Something went wrong with the server can't delete the project",
     });
   }
