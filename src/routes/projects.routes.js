@@ -7,6 +7,7 @@ import {
   getProjects,
   editRecord,
   addTags,
+  getByProjectId,
 } from "../contorllers/projects.controllers.js";
 
 import express from "express";
@@ -42,6 +43,7 @@ router
     upload.fields([{ name: "ProjectImages", maxCount: 3 }]),
     addImageProject
   );
+router.route("/getById/:projectID").get(getByProjectId);
 
 router.route("/addTags/:projectID").post(addTags);
 

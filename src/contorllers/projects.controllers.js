@@ -424,4 +424,5 @@ export {
   getProjects,
   addImageProject,
   addTags,
+  getByProjectId,
 };
