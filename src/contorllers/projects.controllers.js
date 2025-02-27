@@ -382,18 +382,28 @@ const getByProjectId = async (req, res) => {
     return res.status(400).json(new ApiResponse(400, {}, "No ID given"));
   }
 
+  // // Validate ObjectId format (assuming you're using Mongoose)
+  // if (!mongoose.Types.ObjectId.isValid(projectID)) {
+  //   return res.status(400).json(new ApiResponse(400, {}, "Invalid project ID"));
+  // }
+
   try {
     const respo = await Project.findById(projectID);
 
-    if (!respo) return res.status(400, {}, "Can't find the project");
+    if (!respo) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, {}, "Project not found"));
+    }
 
     return res
       .status(200)
       .json(new ApiResponse(200, respo, "Successfully fetched"));
   } catch (error) {
+    console.error("Error fetching project:", error);
     return res
-      .status(400)
-      .json(new ApiResponse(400, {}, "something went wrong with the server"));
+      .status(500)
+      .json(new ApiResponse(500, {}, "Something went wrong with the server"));
   }
 };
 
