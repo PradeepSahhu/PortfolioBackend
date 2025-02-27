@@ -375,6 +375,28 @@ const addTags = async (req, res) => {
   }
 };
 
+const getByProjectId = async (req, res) => {
+  const { projectID } = req.params;
+
+  if (!projectID) {
+    return res.status(400).json(new ApiResponse(400, {}, "No ID given"));
+  }
+
+  try {
+    const respo = await Project.findById(projectID);
+
+    if (!respo) return res.status(400, {}, "Can't find the project");
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, respo, "Successfully fetched"));
+  } catch (error) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, {}, "something went wrong with the server"));
+  }
+};
+
 const checkSystem = (_, res) => {
   const obj = {
     Developer: "Pradeep Sahu",
