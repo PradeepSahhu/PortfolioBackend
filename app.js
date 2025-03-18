@@ -1,4 +1,5 @@
-import userRouter from "./src/routes/projects.routes.js";
+import projectRouter from "./src/routes/projects.routes.js";
+import userRouter from "./src/routes/user.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -16,6 +17,7 @@ app.use(
 app.use(express.static("public"));
 app.use(cookieParser());
 
+app.use("/", projectRouter);
 app.use("/", userRouter);
 
 export { app };
