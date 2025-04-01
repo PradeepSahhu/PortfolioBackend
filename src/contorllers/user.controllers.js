@@ -22,14 +22,18 @@ const UserLogin = async (req, res) => {
   console.table([username, password]);
 
   if (!username || !password) {
-    res.status(400).json(new ApiResponse(400, {}, "something is missing"));
+    return res
+      .status(400)
+      .json(new ApiResponse(400, {}, "something is missing"));
   }
 
   try {
     const user = await User.findOne({ username });
 
     if (!user) {
-      res.status(400).json(new ApiResponse(400, {}, "Can't find the user"));
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Can't find the user"));
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
