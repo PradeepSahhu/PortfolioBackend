@@ -79,7 +79,7 @@ const logoutUser = async (req, res) => {
     req.user._id,
     {
       $unset: {
-        refreshToken: 1, // $set: undefined,null
+        refreshToken: 1,
       },
     },
     {

@@ -11,7 +11,7 @@ import { verifyJWT } from "../middleware/Authentication.js";
 
 const router = express.Router();
 
-router.route("/userlogin").get(UserLogin);
+router.route("/userlogin").post(UserLogin);
 router.route("/logoutUser").post(verifyJWT, logoutUser);
 // router.route("/registerUser").post(RegisterUser);
 
