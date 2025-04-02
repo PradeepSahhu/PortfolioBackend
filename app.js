@@ -18,10 +18,13 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS")); // Block request
     }
   },
-  credentials: true, // Allow cookies and authentication headers
+  credentials: true, // Allow cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Ensure all HTTP methods work
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow required headers
 };
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json({ limit: "20kb" }));
 app.use(cors(corsOptions));
 app.use(
@@ -31,7 +34,6 @@ app.use(
 );
 
 app.use(express.static("public"));
-app.use(cookieParser());
 
 app.use("/", projectRouter);
 app.use("/", userRouter);
