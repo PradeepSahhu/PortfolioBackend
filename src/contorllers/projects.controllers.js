@@ -35,6 +35,14 @@ const addNewProject = async (req, res) => {
     });
   }
 
+  console.log("Uploaded files:", req.files);
+
+  // Ensure projectImages is always an array
+
+  // if (!Array.isArray(projectImages)) {
+  //   projectImages = [projectImages]; // Convert single file to array
+  // }
+
   // uploading to the cloudinary directly usign the file buffer
 
   // Upload the file buffer directly to Cloudinary
@@ -108,6 +116,7 @@ const addNewProject = async (req, res) => {
         new ApiResponse(200, check, "New Project Has been successfully added")
       );
   } catch (error) {
+    console.log(error);
     return res
       .status(501)
       .json({ message: "Something went wrong with the server" });

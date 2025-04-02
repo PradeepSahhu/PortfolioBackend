@@ -5,9 +5,25 @@ import cookieParser from "cookie-parser";
 
 import express from "express";
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://pradeepsahu.vercel.app",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow request
+    } else {
+      callback(new Error("Not allowed by CORS")); // Block request
+    }
+  },
+  credentials: true, // Allow cookies and authentication headers
+};
+
 const app = express();
 app.use(express.json({ limit: "20kb" }));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(
   express.urlencoded({
     extended: true,
