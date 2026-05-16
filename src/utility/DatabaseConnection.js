@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const DatabaseConnection = async () => {
   const con = await mongoose
     .connect(
-      `mongodb+srv://PradeepSahuu:PradeepSahuu@cluster0.vkgne.mongodb.net/wisePayment?retryWrites=true&w=majority&appName=Cluster0`
+      `dbconnectionString`
     )
     .then((res) => {
       console.log("The databse connected to the database");
